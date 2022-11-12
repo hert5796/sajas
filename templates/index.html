@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,46 +8,112 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma-rtl.min.css">
     <title>SAJAS</title>
 </head>
+
 <body class="container">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="https://bulma.io">
+                <img src="https://bulma.io/images/bulma-logo.png"
+                    alt="Bulma: Free, open source, and modern CSS framework based on Flexbox" width="112" height="28">
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+    </nav>
+
     <div class="columns">
         <div class="column">
             <form id="inputform">
-                <textarea class="textarea" name="" id="inputtext" cols="30" rows="10"></textarea>
-                <button class="button is-info" type="submit" id="inputbutton">
-                    redact
-                </button>
+                <!-- Maria lives in London and she is 23 years old. She is a good muslim and supports the Palestinian cause. Her brother Michael is a communist. -->
+                <textarea class="textarea" name="" id="inputtext" cols="30"
+                    rows="10">{{original_text}}</textarea>
+                <hr />
+                <div class="columns">
+                    <div class="column">
+                        <label class="checkbox mr-2">
+                            {% if 'LOCATION' in preserve_entities %}
+                            <input type="checkbox" id="inputlocation">
+                            {% else %}
+                            <input type="checkbox" id="inputlocation" checked>
+                            {% endif %}
+                            Location
+                        </label>
+
+                        <label class="checkbox mr-2">
+                            {% if 'DATE_TIME' in preserve_entities %}
+                            <input type="checkbox" id="inputdates">
+                            {% else %}
+                            <input type="checkbox" id="inputdates" checked>
+                            {% endif %}
+                            Dates
+                        </label>
+
+                        <label class="checkbox mr-2">
+                            {% if 'NRP' in preserve_entities %}
+                            <input type="checkbox" id="inputnrp">
+                            {% else %}
+                            <input type="checkbox" id="inputnrp" checked>
+                            {% endif %}
+                            Nationality & Religion
+                        </label>
+                    </div>
+                    <div class="column is-narrow">
+                        <button class="button is-info" type="submit" id="inputbutton">
+                            Redact
+                        </button>
+                    </div>
+                </div>
             </form>
 
         </div>
         <div class="column">
-            <p>
-                {{redacted_text}}
-
-
-            </p>
-            <button class="button is-danger">
-                copy
-            </button>
-
+            <p>{{redacted_text}}</p>
+            <hr />
+            <button class="button is-danger">Copy</button>
         </div>
     </div>
 
-<script>
-    function submitForm(event){
-        event.preventDefault()
-        button.classList.add("is-loading")
-        button.disabled = true
-        var input = text.value
+    <script>
+        function submitForm(event) {
+            event.preventDefault()
+            button.classList.add("is-loading")
+            button.disabled = true
 
-        window.location.href = `/redact?input=${input}`
+            var input = text.value
 
-    }
-    var form = document.getElementById("inputform")
-    var text = document.getElementById("inputtext")
-    var button = document.getElementById("inputbutton")
-    form.addEventListener("submit", submitForm)
+            var preserve_entities = new Set()
+            if (!document.getElementById("inputlocation").checked) {
+                preserve_entities.add("LOCATION")
+            }
+            if (!document.getElementById("inputdates").checked) {
+                preserve_entities.add("DATE_TIME")
+            }
+            if (!document.getElementById("inputnrp").checked) {
+                preserve_entities.add("NRP")
+            }
 
-</script>
-    
+            window.location.href = "/redact?data=" + encodeURIComponent(JSON.stringify({
+                "text": input,
+                "preserve_entities": Array.from(preserve_entities)
+            }))
+        }
+        var form = document.getElementById("inputform")
+        var text = document.getElementById("inputtext")
+        var button = document.getElementById("inputbutton")
+
+        var ilocation = document.getElementById("inputlocation")
+        var idates = document.getElementById("inputdates")
+        var inrp = document.getElementById("inputnrp")
+
+
+        form.addEventListener("submit", submitForm)
+
+    </script>
+
 </body>
+
 </html>
