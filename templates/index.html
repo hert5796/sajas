@@ -10,9 +10,9 @@
 <body class="container">
     <div class="columns">
         <div class="column">
-            <form action="">
-                <textarea class="textarea" name="" id="" cols="30" rows="10"></textarea>
-                <button class="button is-info">
+            <form id="inputform">
+                <textarea class="textarea" name="" id="inputtext" cols="30" rows="10"></textarea>
+                <button class="button is-info" type="submit" id="inputbutton">
                     redact
                 </button>
             </form>
@@ -20,7 +20,9 @@
         </div>
         <div class="column">
             <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto neque veniam cumque molestiae rem id, maiores perferendis unde. Distinctio repellat officia blanditiis molestias illo vel commodi, nisi accusamus quas facilis.
+                {{redacted_text}}
+
+
             </p>
             <button class="button is-danger">
                 copy
@@ -28,5 +30,23 @@
 
         </div>
     </div>
+
+<script>
+    function submitForm(event){
+        event.preventDefault()
+        button.classList.add("is-loading")
+        button.disabled = true
+        var input = text.value
+
+        window.location.href = `/redact?input=${input}`
+
+    }
+    var form = document.getElementById("inputform")
+    var text = document.getElementById("inputtext")
+    var button = document.getElementById("inputbutton")
+    form.addEventListener("submit", submitForm)
+
+</script>
+    
 </body>
 </html>
