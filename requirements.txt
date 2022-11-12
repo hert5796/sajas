@@ -1,2 +1,3 @@
 presidio-anonymizer
 presidio_analyzer
+flask
